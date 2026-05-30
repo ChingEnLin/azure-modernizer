@@ -1,0 +1,22 @@
+subscription_id: cf8955f0-5f97-4147-b52a-5bba446ff0f8
+tenant_id: 11111111-2222-3333-4444-555555555555
+primary_region: westeurope
+data_regions: [eastus, switzerlandnorth]
+
+naming:
+  resource_group_pattern: "rg-{workload}-{env}"
+  tag_required: [environment, owner, cost-center, workload]
+
+aks:
+  cluster_name: aks-prod-we
+  workload_identity_enabled: true
+  oidc_issuer_enabled: true
+
+work_tracker:
+  type: azure_devops
+  project: Virtonomy
+  epic_id: 7467
+
+docs:
+  spec_dir: ./infra-modernization
+  decision_record_dir: ./infra-modernization/adr

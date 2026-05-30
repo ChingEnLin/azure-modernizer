@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/celin/azure-modernizer/schema/config.schema.json",
+  "title": "azure-modernizer per-project configuration",
+  "type": "object",
+  "required": ["subscription_id", "tenant_id", "primary_region", "docs"],
+  "additionalProperties": false,
+  "properties": {
+    "subscription_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "tenant_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "primary_region": {"type": "string", "minLength": 1},
+    "data_regions": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "naming": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resource_group_pattern": {"type": "string", "minLength": 1},
+        "tag_required": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      }
+    },
+    "aks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cluster_name": {"type": "string", "minLength": 1},
+        "workload_identity_enabled": {"type": "boolean"},
+        "oidc_issuer_enabled": {"type": "boolean"}
+      }
+    },
+    "work_tracker": {
+      "type": "object",
+      "required": ["type", "project", "epic_id"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["azure_devops", "github_issues", "linear", "jira"]
+        },
+        "project": {"type": "string", "minLength": 1},
+        "epic_id": {
+          "oneOf": [
+            {"type": "integer"},
+            {"type": "string", "minLength": 1}
+          ]
+        }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "required": ["spec_dir", "decision_record_dir"],
+      "additionalProperties": false,
+      "properties": {
+        "spec_dir": {"type": "string", "minLength": 1},
+        "decision_record_dir": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
