@@ -1,0 +1,6 @@
+subscription_id: cf8955f0-5f97-4147-b52a-5bba446ff0f8
+tenant_id: 11111111-2222-3333-4444-555555555555
+primary_region: westeurope
+docs:
+  spec_dir: ./infra-modernization
+  decision_record_dir: ./infra-modernization/adr
