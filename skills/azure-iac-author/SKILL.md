@@ -44,7 +44,7 @@ If the operator gives no module name, ask. Do not default.
 7. Run `terraform fmt -recursive terraform/` and `terraform validate` (in each environment dir). Report results.
    - Do NOT run `terraform plan` or `terraform apply`. Stop after `validate`.
 8. **Offer to open a PR via Azure DevOps MCP** with the design doc and ADR linked. Operator confirms before the PR is opened — never automatic.
-9. If `work_tracker` is configured, update the corresponding work item if `work_tracker` is configured.
+9. If `work_tracker` is configured, update the corresponding work item.
 10. Emit the closing line. Suggested next skill: `azure-migrate-runbook` if the design's migration sequencing has not yet been written.
 
 ## Outputs
