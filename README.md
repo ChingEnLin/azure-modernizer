@@ -1,5 +1,100 @@
 # azure-modernizer
 
-Claude Code plugin for modernizing existing Azure estates: live inventory, CAF/WAF-aligned topology design, Terraform IaC authoring, and cutover runbooks.
+A Claude Code plugin that acts as an Azure solution architect / network engineer for **modernizing existing Azure estates**.
 
-Full README in Task 9.
+It inventories live state, designs CAF/WAF-aligned target topologies, authors Terraform modules, and produces executable cutover runbooks. It does not deploy — pipelines own that.
+
+## When to use this
+
+- You have an existing Azure estate and need to harden its network topology (hub-and-spoke, Private Link, Private DNS).
+- You're migrating off public PaaS endpoints to Private Endpoints.
+- You're moving AKS workloads from credentials to Workload Identity federation.
+- You're aligning to CAF/WAF and need a documented decision trail (ADRs, design docs, runbooks).
+
+## When NOT to use this
+
+- **Greenfield Azure deployments** — use `microsoft/azure-skills` instead. It's better at the deploy-direction work.
+- **Generic Terraform discipline** — use [terrashark](https://github.com/LukasNiessen/terrashark) or [antonbabenko/terraform-skill](https://github.com/antonbabenko/terraform-skill). This plugin composes with them.
+- **Multi-cloud** — Azure only.
+
+## Prerequisites
+
+| Plugin | Why | Install |
+|---|---|---|
+| `microsoft/azure-skills` | Provides Azure MCP (200+ tools across 40+ services). This plugin reuses it instead of bundling. | `/plugin install microsoft/azure-skills` |
+| MS Learn MCP server | Required by Ground Rule 2 (cite docs, never guess). | See your host's MCP configuration. |
+| Azure DevOps MCP (optional) | Required only if you configure `work_tracker.type: azure_devops`. | See Microsoft's Azure DevOps MCP docs. |
+| Terraform MCP | Provider/registry lookups during IaC authoring. | See HashiCorp's Terraform MCP. |
+| Kubernetes MCP (optional) | Required for AKS-touching runbooks. | See your host's MCP configuration. |
+
+## Install
+
+```bash
+/plugin install <publisher>/azure-modernizer
+```
+
+(Replace `<publisher>` with the actual marketplace path when published.)
+
+## Per-project setup
+
+1. Copy `examples/config.example.yaml` to `.azure-modernizer/config.yaml` in your repo root.
+2. Fill in `subscription_id`, `tenant_id`, `primary_region`, `docs.spec_dir`, `docs.decision_record_dir`. These are required.
+3. Optionally configure `data_regions`, `naming`, `aks`, `work_tracker`. Omit `work_tracker` entirely if you don't use one — the plugin won't nag.
+4. Run `/azure-inventory networking` to verify the plugin can reach your subscription.
+
+## Commands
+
+| Command | What it does | Output location |
+|---|---|---|
+| `/azure-inventory <scope>` | Maps live Azure state for a scope (networking, identity, data-services, all). | `{docs.spec_dir}/1.x-inventory/` |
+| `/azure-design <topic>` | Designs a target-state topology for a topic, with MS Learn citations and an ADR. | `{docs.spec_dir}/3.x-design/` + `{docs.decision_record_dir}/` |
+| `/azure-iac <module>` | Authors a Terraform module realizing a design. Runs `terraform fmt`/`validate`. Never `plan`/`apply`. | `terraform/modules/` + `terraform/environments/` |
+| `/azure-runbook <topic>` | Produces a cutover runbook with phases, gates, verification, rollback. Re-queries live state at authoring time. | `{docs.spec_dir}/4.x-runbooks/` |
+
+Typical workflow:
+
+```
+/azure-inventory networking         # 1. see current state
+/azure-design hub-and-spoke         # 2. decide target state
+/azure-iac hub-vnet                 # 3. write the modules
+/azure-iac spoke-vnet
+/azure-runbook hub-and-spoke        # 4. plan the cutover
+# 5. human operator executes the runbook
+```
+
+## Ground rules
+
+The `azure-modernizer` subagent operates under five non-negotiable rules:
+
+1. Never hallucinate Azure state — every claim has a live MCP call backing it.
+2. Never guess best practices — every design recommendation has an MS Learn citation.
+3. Cite the live source for IaC — Terraform registry lookups via Terraform MCP.
+4. Surface MCP gaps loudly — if an MCP is down, stop and ask.
+5. Track work-item state when a tracker is configured — silent skip if not.
+
+See `agents/azure-modernizer.md` for the full subagent prompt.
+
+## Development
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -q
+```
+
+Tests validate the config schema and the skill markdown structure. They do NOT call Azure — that's dogfood territory (see "Smoke test" below).
+
+## Smoke test
+
+The honest test for this plugin is dogfooding against a real Azure subscription. Run:
+
+```
+/azure-inventory networking
+```
+
+against your subscription with `.azure-modernizer/config.yaml` set up. Verify the output snapshot matches what you'd get from manually clicking through the portal. If it matches, the plugin works.
+
+## License
+
+MIT.
