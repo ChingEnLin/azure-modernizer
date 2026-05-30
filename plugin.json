@@ -1,0 +1,36 @@
+{
+  "name": "azure-modernizer",
+  "version": "0.1.0",
+  "description": "Claude Code plugin for modernizing existing Azure estates: inventory, CAF/WAF-aligned design, Terraform IaC authoring, and cutover runbooks.",
+  "author": "Ching-En Lin",
+  "license": "MIT",
+  "prerequisites": [
+    {
+      "plugin": "microsoft/azure-skills",
+      "reason": "Provides Azure MCP wiring (200+ tools across 40+ services). azure-modernizer reuses it instead of re-bundling.",
+      "required": true
+    }
+  ],
+  "agents": [
+    {
+      "name": "azure-modernizer",
+      "path": "agents/azure-modernizer.md"
+    }
+  ],
+  "skills": [
+    {"name": "azure-inventory",        "path": "skills/azure-inventory/SKILL.md"},
+    {"name": "azure-design",           "path": "skills/azure-design/SKILL.md"},
+    {"name": "azure-iac-author",       "path": "skills/azure-iac-author/SKILL.md"},
+    {"name": "azure-migrate-runbook",  "path": "skills/azure-migrate-runbook/SKILL.md"}
+  ],
+  "commands": [
+    {"name": "azure-inventory", "path": "commands/azure-inventory.md"},
+    {"name": "azure-design",    "path": "commands/azure-design.md"},
+    {"name": "azure-iac",       "path": "commands/azure-iac.md"},
+    {"name": "azure-runbook",   "path": "commands/azure-runbook.md"}
+  ],
+  "config": {
+    "schema": "schema/config.schema.json",
+    "expected_path": ".azure-modernizer/config.yaml"
+  }
+}
