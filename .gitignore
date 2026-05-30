@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Local config (users put their config under .azure-modernizer/ in their own repo, not here)
+.azure-modernizer/
