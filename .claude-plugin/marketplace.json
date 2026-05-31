@@ -1,13 +1,17 @@
 {
   "name": "azure-modernizer",
   "owner": {
-    "name": "Ching-En Lin"
+    "name": "Ching-En Lin",
+    "url": "https://github.com/ChingEnLin"
   },
   "plugins": [
     {
       "name": "azure-modernizer",
       "description": "Azure solution architect / network engineer for modernizing existing Azure estates: live inventory, CAF/WAF-aligned topology design, Terraform IaC authoring, and cutover runbooks.",
-      "source": "."
+      "source": {
+        "source": "github",
+        "repo": "ChingEnLin/azure-modernizer"
+      }
     }
   ]
 }
