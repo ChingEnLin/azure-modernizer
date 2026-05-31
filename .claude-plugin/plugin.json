@@ -1,0 +1,22 @@
+{
+  "name": "azure-modernizer",
+  "description": "Azure solution architect / network engineer for modernizing existing Azure estates: live inventory, CAF/WAF-aligned topology design, Terraform IaC authoring, and cutover runbooks. Requires microsoft/azure-skills for Azure MCP wiring.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Ching-En Lin"
+  },
+  "license": "MIT",
+  "keywords": [
+    "azure",
+    "modernization",
+    "hub-and-spoke",
+    "private-link",
+    "workload-identity",
+    "caf",
+    "waf",
+    "terraform"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "agents": "./agents/"
+}
