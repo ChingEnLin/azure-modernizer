@@ -15,8 +15,5 @@
     "caf",
     "waf",
     "terraform"
-  ],
-  "skills": "./skills/",
-  "commands": "./commands/",
-  "agents": "./agents/"
+  ]
 }
