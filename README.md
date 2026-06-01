@@ -29,11 +29,38 @@ It inventories live state, designs CAF/WAF-aligned target topologies, authors Te
 
 ## Install
 
-```bash
-/plugin install <publisher>/azure-modernizer
+### Claude Code
+
+Add this repo as a plugin marketplace, then install:
+
+```text
+/plugin marketplace add ChingEnLin/azure-modernizer
+/plugin install azure-modernizer@azure-modernizer
 ```
 
-(Replace `<publisher>` with the actual marketplace path when published.)
+Run from inside Claude Code (these are slash commands, not shell). The marketplace lives at `.claude-plugin/marketplace.json`; the plugin manifest is `.claude-plugin/plugin.json`.
+
+To update later:
+
+```text
+/plugin marketplace update azure-modernizer
+/plugin update azure-modernizer@azure-modernizer
+```
+
+To uninstall:
+
+```text
+/plugin uninstall azure-modernizer@azure-modernizer
+```
+
+### GitHub Copilot CLI
+
+A separate Copilot CLI build of the same plugin lives at [`copilot-cli/`](./copilot-cli/). See [`copilot-cli/README.md`](./copilot-cli/README.md) for prerequisites and install steps. Short version:
+
+```bash
+copilot plugin marketplace add https://github.com/ChingEnLin/azure-modernizer
+copilot plugin install azure-modernizer@azure-modernizer
+```
 
 ## Per-project setup
 
