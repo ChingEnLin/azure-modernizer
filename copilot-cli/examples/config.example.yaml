@@ -1,0 +1,37 @@
+# Copy this file to `.azure-modernizer/config.yaml` in your repo root
+# and fill in the values for your project. All `<required>` fields must be set.
+
+# Azure subscription this plugin operates against. Used by every Azure MCP call.
+subscription_id: <required-uuid>
+
+# Azure tenant. Used for auth and for Workload Identity federation references.
+tenant_id: <required-uuid>
+
+# Primary region for new resources unless a workload requires otherwise.
+primary_region: westeurope
+
+# Additional regions where data lives (informs Private Link planning).
+data_regions: []
+
+# Naming and tagging conventions enforced when authoring Terraform.
+naming:
+  resource_group_pattern: "rg-{workload}-{env}"
+  tag_required: [environment, owner, cost-center, workload]
+
+# AKS context (omit the whole block if no AKS in scope).
+aks:
+  cluster_name: <your-aks-cluster-name>
+  workload_identity_enabled: true
+  oidc_issuer_enabled: true
+
+# Work-item tracker integration. OPTIONAL — omit this whole block if you don't
+# use one. When omitted, the plugin skips work-item updates silently.
+# work_tracker:
+#   type: azure_devops      # azure_devops | github_issues | linear | jira
+#   project: <project-name>
+#   epic_id: <id-or-number>
+
+# Where the plugin writes design docs, ADRs, runbooks, and inventory snapshots.
+docs:
+  spec_dir: ./infra-modernization
+  decision_record_dir: ./infra-modernization/adr

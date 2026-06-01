@@ -1,0 +1,18 @@
+{
+  "name": "azure-modernizer-copilot",
+  "owner": {
+    "name": "Ching-En Lin"
+  },
+  "metadata": {
+    "description": "Azure modernization plugin for GitHub Copilot CLI — live inventory, CAF/WAF-aligned design, Terraform IaC, and cutover runbooks.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "azure-modernizer",
+      "description": "Azure solution architect / network engineer for modernizing existing Azure estates.",
+      "version": "0.1.0",
+      "source": "."
+    }
+  ]
+}
