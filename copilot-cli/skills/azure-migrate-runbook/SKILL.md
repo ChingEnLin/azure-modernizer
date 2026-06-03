@@ -22,10 +22,30 @@ Required input: a **topic** matching an existing design doc under `{docs.spec_di
 
 ## Procedure
 
-1. Load and validate config.
+1. **Load and validate config using bash+python3:**
+   ```bash
+   SCHEMA_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/schema/config.schema.json"
+   python3 << 'VALIDATE'
+   import json, yaml, sys
+   try:
+       with open('.azure-modernizer/config.yaml') as f:
+           config = yaml.safe_load(f)
+       with open('$SCHEMA_PATH') as f:
+           schema = json.load(f)
+       from jsonschema import validate
+       validate(instance=config, schema=schema)
+       print("✓ Config validated successfully")
+   except Exception as e:
+       print(f"✗ Validation error: {e}", file=sys.stderr)
+       sys.exit(1)
+   VALIDATE
+   ```
+
 2. Load the design doc + ADR for the topic. If missing, stop.
+
 3. **Re-query live state** via the Azure MCP for every resource the design touches. Compare to the inventory snapshot.
    - If drift is detected (resource removed, added, or materially changed), surface the drift to the operator. Ask whether to refresh the inventory first or proceed with current state.
+
 4. Decompose the migration into ordered phases. Standard phase shape:
    - **Pre-checks** — explicit preconditions that must be true before the phase starts. Each is a verification command (Azure MCP call or shell command) with the expected result.
    - **Phase steps** — each step has:
@@ -37,12 +57,16 @@ Required input: a **topic** matching an existing design doc under `{docs.spec_di
      - **Estimated duration** — minutes/hours, with confidence note.
    - **Cutover gate** — explicit point of no easy return. Names what triggers it (e.g., "disabling Key Vault public network access"). Lists the approval the operator should have before crossing.
    - **Post-checks** — completion criteria (e.g., "private DNS resolves the PaaS hostname", "public endpoints disabled on all in-scope resources", "AKS health probes green for 15 minutes").
+
 5. Identify **stakeholder coordination points**:
    - Who needs to be notified before/during/after each phase.
    - Which change windows are required (and where they live in your change-management system).
    - Comms templates for "starting", "cutover imminent", "complete", "rolled back".
+
 6. Save to `{docs.spec_dir}/4.x-runbooks/{topic}-runbook.md`. Link from the design doc and ADR (edit those files to add a "Runbook: <path>" line near the top).
+
 7. If `work_tracker` is configured, update the corresponding work item with the runbook path.
+
 8. Emit the closing line. Suggested next skill: none — the runbook is for human execution.
 
 ## Outputs

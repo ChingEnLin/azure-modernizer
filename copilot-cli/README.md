@@ -29,6 +29,60 @@ Configure these MCP servers in your Copilot CLI host before installing:
 
 If a required MCP is missing, the agent stops and tells you which one to start (Ground Rule 4).
 
+## MCP Setup
+
+### Azure MCP (Required)
+
+The **Azure MCP** is required for all skills. It provides Resource Graph queries, ARM operations, and resource property access.
+
+**Configuration:**
+
+Edit `~/.copilot/mcp-config.json` and add this entry under `mcpServers`:
+
+```json
+{
+  "azure": {
+    "type": "stdio",
+    "command": "npx",
+    "args": ["-y", "@azure-mcp/server@latest"]
+  }
+}
+```
+
+The `npx` command auto-installs the server on first use (10-30 seconds, one-time).
+
+**Verification:**
+
+```bash
+# Test Azure MCP availability
+copilot --allow-all-tools -p "List my subscriptions using Azure MCP"
+```
+
+**Note on other MCPs:**
+
+- **Microsoft Learn MCP** — Usually pre-installed with Copilot CLI. If missing, add: `{ "type": "stdio", "command": "npx", "args": ["-y", "@microsoftdocs/mcp@latest"] }`.
+- **Terraform MCP** — Add if IaC authoring is needed: `{ "type": "stdio", "command": "npx", "args": ["-y", "terraform-mcp@latest"] }`.
+- **Azure DevOps MCP** — Optional, for PR creation: installed by default in most Copilot CLI setups.
+- **Kubernetes MCP** — Optional, for AKS cutover runbooks: pre-installed in most setups.
+
+If setup is tedious, use the helper script below.
+
+### Helper Setup Script
+
+For convenience, this repo includes a setup script that idempotently configures all MCPs:
+
+```bash
+bash .azure-modernizer/setup-mcp.sh
+```
+
+This script:
+1. Validates that `jq` is available.
+2. Creates `~/.copilot/mcp-config.json` if missing.
+3. Adds the `azure` MCP server if not already present.
+4. Outputs verification steps.
+
+
+
 ## Install
 
 ### From this marketplace

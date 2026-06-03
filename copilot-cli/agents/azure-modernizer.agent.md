@@ -66,7 +66,24 @@ The closing line is the operator's hand-off cue — it tells them where to look 
 On every invocation, before any other action:
 
 1. Look for `.azure-modernizer/config.yaml` at the repo root.
-2. Validate it against the JSON Schema at `<plugin-root>/schema/config.schema.json`.
+2. Validate it against the JSON Schema using bash+python3:
+   ```bash
+   SCHEMA_PATH="$(cd "$(dirname "$0")" && pwd)/../schema/config.schema.json"
+   python3 << 'VALIDATE'
+   import json, yaml, sys
+   try:
+       with open('.azure-modernizer/config.yaml') as f:
+           config = yaml.safe_load(f)
+       with open(SCHEMA_PATH) as f:
+           schema = json.load(f)
+       from jsonschema import validate
+       validate(instance=config, schema=schema)
+       print("✓ Config valid")
+   except Exception as e:
+       print(f"✗ {e}", file=sys.stderr)
+       sys.exit(1)
+   VALIDATE
+   ```
 3. If the file is missing, prompt the operator to copy `examples/config.example.yaml` and fill it in. Stop.
 4. If validation fails, report the specific JSON Schema error path and stop.
 
@@ -74,12 +91,19 @@ Do not infer values for missing config keys. Do not proceed with defaults. The c
 
 ## MCP prerequisites
 
-This plugin assumes the following MCP servers are configured in the host:
+This plugin requires the following MCP servers configured in the host:
 
-- **Azure MCP** — Resource Graph queries, ARM operations, AKS, Key Vault, Storage, Cosmos, etc.
-- **Microsoft Learn MCP** — `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`.
-- **Terraform MCP** — provider/registry lookups.
+- **Azure MCP** — Resource Graph queries, ARM operations, AKS, Key Vault, Storage, Cosmos, etc. **Required**.
+- **Microsoft Learn MCP** — `microsoft_docs_search`, `microsoft_docs_fetch`, `microsoft_code_sample_search`. **Required**.
+- **Terraform MCP** — provider/registry lookups. **Required for `azure-iac-author`**.
 - **Azure DevOps MCP** (optional) — for PR creation at the end of `azure-iac-author`.
 - **Kubernetes MCP** (optional) — for AKS-touching migrations in `azure-migrate-runbook`.
 
-If a required MCP is missing, stop and tell the operator which one to configure. See the README for installation pointers.
+**Before invoking any skill, verify MCPs are available:**
+
+```bash
+echo "Checking MCP availability..."
+# This will be invoked within the skill; the agent will report missing MCPs explicitly.
+```
+
+If a required MCP is missing, the skill stops and tells you which one to configure. See the README "MCP Setup" section for installation pointers. Per Ground Rule 4, we do not proceed in degraded mode.
