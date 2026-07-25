@@ -19,7 +19,7 @@ Required input: a **scope** — one of `networking`, `identity`, `data-services`
 
 - **Azure MCP** — Resource Graph queries, networking config, AKS config, Key Vault network rules, Storage firewall rules, Cosmos DB IP allowlists.
 
-If the Azure MCP is unavailable: stop, report which call failed, ask the operator to start the MCP. Per Ground Rule 4.
+If the Azure MCP is unavailable: name the gap, then fall back to read-only `az` CLI commands (`az graph query`, `az network ...`, `az aks show`, etc.) and note the CLI fallback in the snapshot header. Per Ground Rule 4.
 
 ## Procedure
 
@@ -72,11 +72,13 @@ If the Azure MCP is unavailable: stop, report which call failed, ask the operato
    - **Gaps vs. target topology** — bullet list of CAF/WAF deviations (e.g., "no Private Endpoints found", "Key Vault public access enabled", "single LB egress — SNAT exhaustion risk"). Each gap cites the relevant Azure resource(s).
    - **Suggested designs** — list of `azure-design` topics this inventory motivates (e.g., `private-link-dns`, `aks-outbound-redesign`).
 
-8. Save to `{docs.spec_dir}/1.x-inventory/{YYYY-MM-DD}-{scope}.md`.
+8. **Refresh mode:** if a previous snapshot for the same scope exists under `{docs.spec_dir}`, this run is a refresh. Diff the new state against the most recent snapshot and prepend a `## Delta vs {previous-snapshot-date}` section listing resources added, removed, or materially changed (network config, SKU, access posture). Do not overwrite the old snapshot.
 
-9. If `work_tracker` is configured, update the corresponding work item to reflect the inventory snapshot's existence (add a comment with the snapshot path).
+9. Save to `{docs.spec_dir}/1.x-inventory/{YYYY-MM-DD}-{scope}.md`, and update the `verified` date comment in `.azure-modernizer/config.yaml` if one exists.
 
-10. Emit the closing line.
+10. If `work_tracker` is configured, update the corresponding work item to reflect the inventory snapshot's existence (add a comment with the snapshot path).
+
+11. Emit the closing line.
 
 ## Outputs
 

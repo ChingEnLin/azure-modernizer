@@ -1,6 +1,6 @@
 {
   "name": "azure-modernizer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Claude Code plugin for modernizing existing Azure estates: inventory, CAF/WAF-aligned design, Terraform IaC authoring, and cutover runbooks.",
   "author": "Ching-En Lin",
   "license": "MIT",
@@ -21,13 +21,15 @@
     {"name": "azure-inventory",        "path": "skills/azure-inventory/SKILL.md"},
     {"name": "azure-design",           "path": "skills/azure-design/SKILL.md"},
     {"name": "azure-iac-author",       "path": "skills/azure-iac-author/SKILL.md"},
-    {"name": "azure-migrate-runbook",  "path": "skills/azure-migrate-runbook/SKILL.md"}
+    {"name": "azure-migrate-runbook",  "path": "skills/azure-migrate-runbook/SKILL.md"},
+    {"name": "azure-assess",           "path": "skills/azure-assess/SKILL.md"}
   ],
   "commands": [
     {"name": "azure-inventory", "path": "commands/azure-inventory.md"},
     {"name": "azure-design",    "path": "commands/azure-design.md"},
     {"name": "azure-iac",       "path": "commands/azure-iac.md"},
-    {"name": "azure-runbook",   "path": "commands/azure-runbook.md"}
+    {"name": "azure-runbook",   "path": "commands/azure-runbook.md"},
+    {"name": "azure-assess",    "path": "commands/azure-assess.md"}
   ],
   "config": {
     "schema": "schema/config.schema.json",

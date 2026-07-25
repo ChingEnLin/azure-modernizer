@@ -64,8 +64,8 @@
       "required": ["spec_dir", "decision_record_dir"],
       "additionalProperties": false,
       "properties": {
-        "spec_dir": {"type": "string", "minLength": 1},
-        "decision_record_dir": {"type": "string", "minLength": 1}
+        "spec_dir": {"type": "string", "minLength": 1, "description": "Directory for inventory snapshots, designs, and runbooks. Resolved relative to the repo root, never relative to the config file. Must exist before skills write to it."},
+        "decision_record_dir": {"type": "string", "minLength": 1, "description": "Directory for ADRs. Resolved relative to the repo root, never relative to the config file."}
       }
     }
   }

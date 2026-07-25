@@ -8,12 +8,14 @@ This is the **GitHub Copilot CLI** port of the [`azure-modernizer` Claude Code p
 
 ## What you get
 
-- **1 agent** — `azure-modernizer` (umbrella architect that delegates to the four skills below).
-- **4 skills**:
-  - `azure-inventory` — map live Azure state by capability.
+- **1 agent** — `azure-modernizer` (umbrella architect that delegates to the skills below).
+- **5 skills**:
+  - `azure-inventory` — map live Azure state by capability (with refresh/delta mode).
+  - `azure-assess` — topic-scoped assessments outside the main pipeline (audits, strategies, cost tradeoffs, as-is diagrams).
   - `azure-design` — produce a CAF/WAF-aligned target-state design + ADR.
-  - `azure-iac-author` — author Terraform modules realizing a design.
-  - `azure-migrate-runbook` — produce an executable cutover runbook.
+  - `azure-iac-author` — author Terraform modules realizing a design, extending the repo's existing layout in place.
+  - `azure-migrate-runbook` — produce an executable cutover runbook and register it in the progress ledger.
+- **2 templates** under `templates/` — an implementation-agent contract with human approval gates (`infra-implementer.agent.md`) and a cross-session progress ledger (`progress-ledger.md`).
 
 ## Prerequisites
 

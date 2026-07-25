@@ -36,10 +36,12 @@ def test_subagent_structure(repo_root):
     )
 
 
-@pytest.mark.parametrize(
-    "skill_name",
-    ["azure-inventory", "azure-design", "azure-iac-author", "azure-migrate-runbook"],
+SKILL_NAMES = sorted(
+    p.parent.name for p in (Path(__file__).parents[1] / "skills").glob("*/SKILL.md")
 )
+
+
+@pytest.mark.parametrize("skill_name", SKILL_NAMES)
 def test_skill_structure(repo_root, skill_name):
     _check_markdown_file(
         repo_root / "skills" / skill_name / "SKILL.md",

@@ -75,8 +75,9 @@ copilot plugin install azure-modernizer@azure-modernizer
 |---|---|---|
 | `/azure-inventory <scope>` | Maps live Azure state for a scope (networking, identity, data-services, all). | `{docs.spec_dir}/1.x-inventory/` |
 | `/azure-design <topic>` | Designs a target-state topology for a topic, with MS Learn citations and an ADR. | `{docs.spec_dir}/3.x-design/` + `{docs.decision_record_dir}/` |
-| `/azure-iac <module>` | Authors a Terraform module realizing a design. Runs `terraform fmt`/`validate`. Never `plan`/`apply`. | `terraform/modules/` + `terraform/environments/` |
-| `/azure-runbook <topic>` | Produces a cutover runbook with phases, gates, verification, rollback. Re-queries live state at authoring time. | `{docs.spec_dir}/4.x-runbooks/` |
+| `/azure-assess <topic>` | Produces a topic-scoped assessment (egress audit, secret-zero strategy, cost tradeoffs, as-is diagrams, ...) with live evidence and citations. | `{docs.spec_dir}/2.x-assessments/` |
+| `/azure-iac <module>` | Authors a Terraform module realizing a design, extending the repo's existing Terraform layout in place. Runs `terraform fmt`/`validate`. Never `plan`/`apply`. | the repo's existing module/stack dirs |
+| `/azure-runbook <topic>` | Produces a cutover runbook with phases, gates, verification, rollback. Re-queries live state at authoring time. Registers the runbook in the progress ledger. | `{docs.spec_dir}/4.x-runbooks/` |
 
 Typical workflow:
 
@@ -86,8 +87,17 @@ Typical workflow:
 /azure-iac hub-vnet                 # 3. write the modules
 /azure-iac spoke-vnet
 /azure-runbook hub-and-spoke        # 4. plan the cutover
-# 5. human operator executes the runbook
+# 5. a human executes the runbook — or a project-local implementation
+#    agent bound by templates/infra-implementer.md, under human approval
+#    gates, updating {docs.spec_dir}/progress-ledger.md after every step
 ```
+
+## Templates
+
+The plugin never deploys, but implementation has to happen somewhere. `templates/` ships two starting points for that phase:
+
+- `templates/infra-implementer.md` — a contract for a project-local implementation agent (copy into your repo's `.claude/agents/`): approval brief before any mutation, `terraform plan` before apply with a hard stop on `replace`/`destroy`, expand-cutover-contract, staging first, cold-resumable checkpoints.
+- `templates/progress-ledger.md` — a cross-session progress ledger (current checkpoint, applied changes, open items, session log). The runbook skill creates it automatically; whoever executes keeps it current.
 
 ## Ground rules
 

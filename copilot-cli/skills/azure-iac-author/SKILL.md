@@ -54,7 +54,8 @@ Required input: a **module name** — kebab-case, matching a module type, e.g. `
 
 4. Look up the Azure resource types involved via the Terraform MCP. Verify the chosen resource versions exist.
 
-5. Author the module under `terraform/modules/{module}/` with:
+5. **Brownfield first — detect the repo's existing Terraform layout before writing anything.** Find the existing module directory (`terraform_modules/`, `modules/`, `terraform/modules/`, ...), root/environment stacks, state backend, and provider pins, and follow them. Default to extending the existing stack in place — a new module directory beside its siblings, wired into the existing root or environment composition, deliverable as one reviewable PR against the existing workspace. Only scaffold a parallel stack (separate state/workspace) if the operator explicitly asks for state separation; name the tradeoff (parallel stacks drift and get abandoned when implementation lands incrementally in the original workspace).
+   The canonical layout below applies only when the repo has no Terraform at all. Author the module under the repo's module directory (canonical default `terraform/modules/{module}/`) with:
    - `main.tf` — resource declarations.
    - `variables.tf` — typed inputs with descriptions and validation.
    - `outputs.tf` — typed outputs documented.
@@ -62,9 +63,9 @@ Required input: a **module name** — kebab-case, matching a module type, e.g. `
    - `README.md` — purpose, inputs, outputs, example usage, references to the design doc.
    Use naming conventions from `config.yaml::naming.resource_group_pattern` and `config.yaml::naming.tag_required`.
 
-6. Compose the module into the requested environment stack(s) under `terraform/environments/{env}/`, referencing the module via relative path.
+6. Compose the module into the requested environment stack(s) — the repo's existing root module or environment dirs, or `terraform/environments/{env}/` when scaffolding fresh — referencing the module via relative path.
 
-7. Run `terraform fmt -recursive terraform/` and `terraform validate` (in each environment dir). Report results.
+7. Run `terraform fmt -recursive` and `terraform validate` (in each touched stack dir). Report results.
    - Do NOT run `terraform plan` or `terraform apply`. Stop after `validate`.
 
 8. **Offer to open a PR via the Azure DevOps MCP** with the design doc and ADR linked. Operator confirms before the PR is opened — never automatic.
@@ -75,8 +76,8 @@ Required input: a **module name** — kebab-case, matching a module type, e.g. `
 
 ## Outputs
 
-- Terraform module at `terraform/modules/{module}/` with the five files above.
-- Environment composition under `terraform/environments/{env}/`.
+- Terraform module in the repo's existing module directory (or `terraform/modules/{module}/` when scaffolding fresh) with the five files above.
+- Composition into the repo's existing root/environment stack(s).
 - `terraform fmt`/`validate` output reported in chat.
 - Optionally, a PR (after operator confirmation).
 - Optionally, a work-item update.

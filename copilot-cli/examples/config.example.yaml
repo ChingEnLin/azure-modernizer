@@ -32,6 +32,8 @@ aks:
 #   epic_id: <id-or-number>
 
 # Where the plugin writes design docs, ADRs, runbooks, and inventory snapshots.
+# Paths are resolved relative to the REPO ROOT (not this file's directory) and
+# must exist before skills write to them. Keep exactly one config.yaml per repo.
 docs:
   spec_dir: ./infra-modernization
   decision_record_dir: ./infra-modernization/adr

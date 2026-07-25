@@ -18,26 +18,16 @@ def test_manifest_lists_subagent(manifest):
     assert "azure-modernizer" in names
 
 
-def test_manifest_lists_four_skills(manifest):
-    skills = manifest.get("skills", [])
-    names = {s.get("name") for s in skills}
-    assert names == {
-        "azure-inventory",
-        "azure-design",
-        "azure-iac-author",
-        "azure-migrate-runbook",
-    }
+def test_manifest_skills_match_skill_dirs(manifest, repo_root):
+    names = {s.get("name") for s in manifest.get("skills", [])}
+    dirs = {p.parent.name for p in (repo_root / "skills").glob("*/SKILL.md")}
+    assert names == dirs
 
 
-def test_manifest_lists_four_commands(manifest):
-    commands = manifest.get("commands", [])
-    names = {c.get("name") for c in commands}
-    assert names == {
-        "azure-inventory",
-        "azure-design",
-        "azure-iac",
-        "azure-runbook",
-    }
+def test_manifest_commands_match_command_files(manifest, repo_root):
+    names = {c.get("name") for c in manifest.get("commands", [])}
+    files = {p.stem for p in (repo_root / "commands").glob("*.md")}
+    assert names == files
 
 
 def test_manifest_declares_prerequisite(manifest):

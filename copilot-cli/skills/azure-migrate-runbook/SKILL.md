@@ -65,14 +65,17 @@ Required input: a **topic** matching an existing design doc under `{docs.spec_di
 
 6. Save to `{docs.spec_dir}/4.x-runbooks/{topic}-runbook.md`. Link from the design doc and ADR (edit those files to add a "Runbook: <path>" line near the top).
 
-7. If `work_tracker` is configured, update the corresponding work item with the runbook path.
+7. **Set up execution tracking.** If `{docs.spec_dir}/progress-ledger.md` does not exist, create it from `templates/progress-ledger.md` and add an entry for this runbook (all phases pending). The ledger — not the runbook — is the source of truth for what has actually been applied; whoever executes must update it after every step so any later session can resume cold.
 
-8. Emit the closing line. Suggested next skill: none — the runbook is for human execution.
+8. If `work_tracker` is configured, update the corresponding work item with the runbook path.
+
+9. Emit the closing line. Suggested next: execution. The runbook can be executed by a human directly, or by a project-local implementation agent operating under human approval gates — offer the contract at `templates/infra-implementer.md` as a starting point. This skill itself never executes the migration.
 
 ## Outputs
 
 - Runbook at `{docs.spec_dir}/4.x-runbooks/{topic}-runbook.md`.
+- Progress ledger at `{docs.spec_dir}/progress-ledger.md` (created if absent) with this runbook's phases registered.
 - Updated design doc and ADR with a runbook back-link.
 - Optionally, a work-item update.
 
-**The runbook is for human execution. This skill never runs migration commands itself.**
+**This skill never runs migration commands itself.** Execution belongs to a human or to a project-local implementation agent bound by the approval-gate contract in `templates/infra-implementer.md`.
